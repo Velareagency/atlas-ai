@@ -45,11 +45,17 @@ Rules:
 
     const output = completion.choices[0].message.content;
 
-    if (!output) {
-      throw new Error("Empty AI response");
-    }
+if (!output) {
+  throw new Error("Empty AI response");
+}
 
-    const parsed = JSON.parse(output);
+const parsed = JSON.parse(output);
+
+// ✅ INSERT HERE (AFTER parsing)
+parsed.items = parsed.items.map((item: any) => ({
+  ...item,
+  confidence: Math.max(0, Math.min(item.confidence, 0.95)),
+}));
 
     return NextResponse.json(parsed);
   } catch (err) {
